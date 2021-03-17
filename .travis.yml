@@ -1,0 +1,24 @@
+language: generic
+sude: required
+services:
+  - docker
+
+before_install:
+  - docker build -t multi-docker-test  -f ./client/Dockerfile.dev .
+
+script:
+  - docker run -e CI=true multi-docker-test npm test
+
+after_success:
+  - docker build -t binhpfiev/multi-client ./client
+  - docker build -t binhpfiev/multi-nginx ./nginx
+  - docker build -t binhpfiev/multi-server ./server
+  - docker build -t binhpfiev/multi-worker ./worker
+  #Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push binhpfiev/multi-client
+  - docker push binhpfiev/multi-nginx
+  - docker push binhpfiev/multi-server
+  - docker push binhpfiev/multi-worker
+

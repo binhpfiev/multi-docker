@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t multi-docker-test  -f ./client/Dockerfile.dev .
+  - docker build -t multi-docker-test  -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true multi-docker-test npm test
